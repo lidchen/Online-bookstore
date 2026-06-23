@@ -1,0 +1,409 @@
+{
+  "info": {
+    "name": "网上书店系统 API",
+    "description": "网上书店系统全部22个接口的Postman测试集合\n\n基础URL: http://localhost:8080/api\n认证方式: Session (Cookie)\n\n测试账号:\n- 管理员: admin / admin123\n- 普通用户: testuser / 123456",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080/api"
+    },
+    {
+      "key": "admin_username",
+      "value": "admin"
+    },
+    {
+      "key": "admin_password",
+      "value": "admin123"
+    },
+    {
+      "key": "user_username",
+      "value": "testuser"
+    },
+    {
+      "key": "user_password",
+      "value": "123456"
+    }
+  ],
+  "item": [
+    {
+      "name": "01_用户模块",
+      "item": [
+        {
+          "name": "01_注册",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/register",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"{{user_username}}\",\n    \"password\": \"{{user_password}}\",\n    \"confirm_password\": \"{{user_password}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "02_登录（管理员）",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/login",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"{{admin_username}}\",\n    \"password\": \"{{admin_password}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "03_登录（普通用户）",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/login",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"{{user_username}}\",\n    \"password\": \"{{user_password}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "04_登录（密码错误）",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/login",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"{{user_username}}\",\n    \"password\": \"wrong_password\"\n}"
+            }
+          }
+        },
+        {
+          "name": "05_退出登录",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/logout"
+          }
+        }
+      ]
+    },
+    {
+      "name": "02_图书模块",
+      "item": [
+        {
+          "name": "01_图书列表（默认分页）",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/books"
+          }
+        },
+        {
+          "name": "02_图书列表（第2页）",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/books?page=2&page_size=5"
+          }
+        },
+        {
+          "name": "03_图书搜索（按书名）",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/books?keyword=三体"
+          }
+        },
+        {
+          "name": "04_图书分类筛选",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/books?category_id=1"
+          }
+        },
+        {
+          "name": "05_图书详情",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/books/1"
+          }
+        },
+        {
+          "name": "06_图书详情（不存在）",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/books/99999"
+          }
+        }
+      ]
+    },
+    {
+      "name": "03_购物车模块",
+      "item": [
+        {
+          "name": "01_查看购物车",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/cart"
+          }
+        },
+        {
+          "name": "02_加入购物车",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/cart",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"book_id\": 1,\n    \"quantity\": 1\n}"
+            }
+          }
+        },
+        {
+          "name": "03_修改购物车数量",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/cart/1",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"quantity\": 3\n}"
+            }
+          }
+        },
+        {
+          "name": "04_删除购物车商品",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/cart/1"
+          }
+        },
+        {
+          "name": "05_清空购物车",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/cart"
+          }
+        }
+      ]
+    },
+    {
+      "name": "04_订单模块",
+      "item": [
+        {
+          "name": "01_提交订单",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/orders",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"address\": \"北京市朝阳区建国路88号\",\n    \"phone\": \"13800138000\"\n}"
+            }
+          }
+        },
+        {
+          "name": "02_我的订单",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/orders"
+          }
+        },
+        {
+          "name": "03_模拟支付",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/orders/1001/pay"
+          }
+        },
+        {
+          "name": "04_取消订单",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/orders/1001/cancel"
+          }
+        },
+        {
+          "name": "05_确认收货",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/orders/1002/confirm"
+          }
+        }
+      ]
+    },
+    {
+      "name": "05_后台管理模块",
+      "item": [
+        {
+          "name": "01_后台图书列表",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/admin/books"
+          }
+        },
+        {
+          "name": "02_后台图书列表（分页+搜索）",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/admin/books?page=1&page_size=5&keyword=三体"
+          }
+        },
+        {
+          "name": "03_添加图书",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/admin/books",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "测试图书",
+                  "type": "text"
+                },
+                {
+                  "key": "author",
+                  "value": "测试作者",
+                  "type": "text"
+                },
+                {
+                  "key": "price",
+                  "value": "99.00",
+                  "type": "text"
+                },
+                {
+                  "key": "stock",
+                  "value": "100",
+                  "type": "text"
+                },
+                {
+                  "key": "category_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "这是一本测试图书",
+                  "type": "text"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "04_编辑图书",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/admin/books/1",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"三体（修订版）\",\n    \"price\": 88.00\n}"
+            }
+          }
+        },
+        {
+          "name": "05_删除图书",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/admin/books/200"
+          }
+        },
+        {
+          "name": "06_上架图书",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/admin/books/1/status",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": 1\n}"
+            }
+          }
+        },
+        {
+          "name": "07_下架图书",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/admin/books/1/status",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": 0\n}"
+            }
+          }
+        },
+        {
+          "name": "08_后台订单列表",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/admin/orders"
+          }
+        },
+        {
+          "name": "09_后台订单列表（按状态筛选）",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/admin/orders?status=0"
+          }
+        },
+        {
+          "name": "10_发货",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/admin/orders/1001/ship"
+          }
+        }
+      ]
+    }
+  ]
+}
