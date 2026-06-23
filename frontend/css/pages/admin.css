@@ -1,0 +1,88 @@
+/**
+ * 后台管理页面样式
+ */
+
+.admin-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.admin-toolbar .toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.admin-toolbar .toolbar-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-toolbar .toolbar-search input {
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 14px;
+    width: 240px;
+}
+
+.admin-toolbar .toolbar-search input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.admin-stat {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.admin-stat .stat-card {
+    background: var(--bg-white);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    border: 1px solid var(--border-light);
+}
+
+.admin-stat .stat-card .stat-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.admin-stat .stat-card .stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.admin-stat .stat-card .stat-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+@media (max-width: 1024px) {
+    .admin-stat {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .admin-toolbar .toolbar-search input {
+        width: 100%;
+    }
+    .admin-stat {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+}

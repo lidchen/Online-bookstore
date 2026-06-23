@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>我的订单 - CloudBook 云书房</title>
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/components.css" />
+    <link rel="stylesheet" href="/css/layout.css" />
+</head>
+<body>
+    <div id="header"></div>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="/index.html">首页</a>
+                <span class="separator">/</span>
+                <span>我的订单</span>
+            </div>
+
+            <div class="page-header">
+                <h1 class="page-title">我的订单</h1>
+            </div>
+
+            <div id="order-list">
+                <div class="loading-inline">加载中...</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer"></div>
+
+    <script src="/js/core/config.js"></script>
+    <script src="/js/core/utils.js"></script>
+    <script src="/js/core/api.js"></script>
+    <script src="/js/modules/order.js"></script>
+    <script src="/js/components/header.js"></script>
+    <script src="/js/components/footer.js"></script>
+    <script src="/js/components/modal.js"></script>
+    <script src="/js/components/loading.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>

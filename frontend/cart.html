@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>购物车 - CloudBook 云书房</title>
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/components.css" />
+    <link rel="stylesheet" href="/css/layout.css" />
+    <link rel="stylesheet" href="/css/pages/cart.css" />
+</head>
+<body>
+    <div id="header"></div>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="/index.html">首页</a>
+                <span class="separator">/</span>
+                <span>购物车</span>
+            </div>
+
+            <div class="page-header">
+                <h1 class="page-title">购物车</h1>
+                <div class="flex" style="gap:10px;">
+                    <button class="btn btn-danger btn-sm" id="clear-cart-btn">清空购物车</button>
+                </div>
+            </div>
+
+            <div id="cart-list">
+                <div class="loading-inline">加载中...</div>
+            </div>
+
+            <div class="cart-total-bar" id="cart-total-bar">
+                <span class="total-label">合计：</span>
+                <span class="total-price" id="cart-total">¥0.00</span>
+                <button class="btn btn-primary btn-lg" id="checkout-btn">去结算</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer"></div>
+
+    <script src="/js/core/config.js"></script>
+    <script src="/js/core/utils.js"></script>
+    <script src="/js/core/api.js"></script>
+    <script src="/js/modules/auth.js"></script>
+    <script src="/js/modules/cart.js"></script>
+    <script src="/js/components/header.js"></script>
+    <script src="/js/components/footer.js"></script>
+    <script src="/js/components/modal.js"></script>
+    <script src="/js/components/loading.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>

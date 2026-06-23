@@ -1,0 +1,424 @@
+/**
+ * 布局样式 - Z-Library 风格
+ */
+
+/* ===== 头部导航栏 ===== */
+.header {
+    background: var(--bg-white);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-sm);
+}
+
+.header .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    gap: 20px;
+}
+
+.header .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    flex-shrink: 0;
+}
+
+.header .logo .logo-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--primary);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 20px;
+}
+
+.header .logo span {
+    background: linear-gradient(135deg, var(--primary), #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.header .header-search {
+    flex: 1;
+    max-width: 480px;
+}
+
+.header .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.header .header-actions .user-info {
+    font-size: 14px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.header .header-actions .user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--primary-light);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.header .cart-btn {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--text);
+    transition: all var(--transition);
+}
+
+.header .cart-btn:hover {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.header .cart-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    min-width: 18px;
+    height: 18px;
+    background: var(--danger);
+    color: #fff;
+    border-radius: 9px;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+    font-weight: 600;
+}
+
+.header .nav-link {
+    padding: 8px 14px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    color: var(--text);
+    transition: all var(--transition);
+}
+
+.header .nav-link:hover {
+    background: var(--bg);
+    color: var(--primary);
+}
+
+.header .nav-link.admin-link {
+    color: var(--primary);
+    font-weight: 500;
+}
+
+/* ===== 底部 ===== */
+.footer {
+    background: var(--bg-white);
+    border-top: 1px solid var(--border);
+    padding: 24px 0;
+    margin-top: auto;
+}
+
+.footer .footer-inner {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.footer .footer-inner a {
+    color: var(--text-secondary);
+}
+
+.footer .footer-inner a:hover {
+    color: var(--primary);
+}
+
+/* ===== 侧边栏（分类导航） ===== */
+.page-layout {
+    display: flex;
+    gap: 24px;
+}
+
+.sidebar {
+    width: 200px;
+    flex-shrink: 0;
+}
+
+.sidebar .sidebar-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary);
+    color: var(--text);
+}
+
+.sidebar .category-list {
+    background: var(--bg-white);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border-light);
+}
+
+.sidebar .category-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    font-size: 14px;
+    color: var(--text);
+    cursor: pointer;
+    transition: all var(--transition);
+    border-left: 3px solid transparent;
+}
+
+.sidebar .category-item:hover {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.sidebar .category-item.active {
+    background: var(--primary-light);
+    color: var(--primary);
+    border-left-color: var(--primary);
+    font-weight: 600;
+}
+
+.sidebar .category-item .cat-icon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+}
+
+.sidebar .category-count {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--text-light);
+    background: var(--bg);
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+}
+
+.content-area {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ===== 图书网格 ===== */
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+/* ===== 页面标题 ===== */
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.page-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+/* ===== 面包屑 ===== */
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+}
+
+.breadcrumb a {
+    color: var(--text-secondary);
+}
+
+.breadcrumb a:hover {
+    color: var(--primary);
+}
+
+.breadcrumb .separator {
+    color: var(--text-light);
+}
+
+/* ===== 卡片面板 ===== */
+.panel {
+    background: var(--bg-white);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-light);
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.panel-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+/* ===== 认证页面布局 ===== */
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+}
+
+.auth-card {
+    background: var(--bg-white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 420px;
+    padding: 40px;
+}
+
+.auth-card .auth-logo {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.auth-card .auth-logo .logo-icon {
+    width: 56px;
+    height: 56px;
+    background: var(--primary);
+    border-radius: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 28px;
+    margin-bottom: 12px;
+}
+
+.auth-card .auth-logo h1 {
+    font-size: 24px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary), #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.auth-card .auth-subtitle {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 28px;
+}
+
+.auth-card .auth-footer {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 1024px) {
+    .book-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .header .header-inner {
+        height: 56px;
+        gap: 10px;
+    }
+    .header .logo {
+        font-size: 18px;
+    }
+    .header .header-search {
+        max-width: none;
+    }
+    .header .header-search .search-box input {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+    .page-layout {
+        flex-direction: column;
+    }
+    .sidebar {
+        width: 100%;
+    }
+    .sidebar .category-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        border: none;
+        background: transparent;
+    }
+    .sidebar .category-item {
+        border-radius: var(--radius-full);
+        padding: 8px 14px;
+        border: 1px solid var(--border);
+        background: var(--bg-white);
+    }
+    .sidebar .category-item.active {
+        background: var(--primary);
+        color: #fff;
+        border-color: var(--primary);
+    }
+    .book-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    .auth-card {
+        padding: 28px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .book-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    .header .header-inner {
+        gap: 8px;
+    }
+    .header .nav-link {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+}

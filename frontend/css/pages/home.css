@@ -1,0 +1,100 @@
+/**
+ * 首页样式
+ */
+
+/* 首页横幅 */
+.home-banner {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    padding: 48px 0;
+    margin-bottom: 24px;
+    color: #fff;
+    text-align: center;
+}
+
+.home-banner h2 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.home-banner p {
+    font-size: 16px;
+    opacity: 0.8;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* 热门标签 */
+.hot-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.hot-tag {
+    padding: 6px 14px;
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.hot-tag:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--primary-light);
+}
+
+/* 排序栏 */
+.sort-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    background: var(--bg-white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-light);
+}
+
+.sort-bar .result-count {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.sort-bar .sort-options {
+    display: flex;
+    gap: 8px;
+}
+
+.sort-bar .sort-option {
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.sort-bar .sort-option:hover,
+.sort-bar .sort-option.active {
+    background: var(--primary);
+    color: #fff;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+    .home-banner {
+        padding: 32px 0;
+    }
+    .home-banner h2 {
+        font-size: 22px;
+    }
+    .home-banner p {
+        font-size: 14px;
+    }
+}

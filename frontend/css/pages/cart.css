@@ -1,0 +1,51 @@
+/**
+ * 购物车页面样式
+ */
+
+.cart-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.cart-total-bar {
+    position: sticky;
+    bottom: 0;
+    background: var(--bg-white);
+    border-top: 2px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+    margin-top: 24px;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+}
+
+.cart-total-bar .total-label {
+    font-size: 16px;
+    color: var(--text-secondary);
+}
+
+.cart-total-bar .total-price {
+    font-size: 24px;
+    font-weight: 700;
+    color: #e74c3c;
+}
+
+.cart-total-bar .total-price .unit {
+    font-size: 16px;
+}
+
+@media (max-width: 768px) {
+    .cart-total-bar {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+    .cart-total-bar .btn {
+        width: 100%;
+    }
+}

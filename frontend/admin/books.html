@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>图书管理 - CloudBook 后台</title>
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/components.css" />
+    <link rel="stylesheet" href="/css/layout.css" />
+    <link rel="stylesheet" href="/css/pages/admin.css" />
+</head>
+<body>
+    <div id="header"></div>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="/index.html">首页</a>
+                <span class="separator">/</span>
+                <span>后台</span>
+                <span class="separator">/</span>
+                <span>图书管理</span>
+            </div>
+
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">图书管理</h1>
+                    <p class="page-subtitle">添加、编辑、删除图书，管理上下架状态</p>
+                </div>
+                <a href="/admin/orders.html" class="btn btn-outline">订单管理</a>
+            </div>
+
+            <div class="admin-toolbar">
+                <div class="toolbar-left">
+                    <button class="btn btn-primary" id="add-book-btn">+ 添加图书</button>
+                </div>
+                <div class="toolbar-search">
+                    <input type="text" id="admin-book-search" placeholder="搜索书名..." />
+                    <button class="btn btn-secondary btn-sm" id="admin-book-search-btn">搜索</button>
+                </div>
+            </div>
+
+            <div id="admin-book-list">
+                <div class="loading-inline">加载中...</div>
+            </div>
+            <div id="admin-book-pagination"></div>
+        </div>
+    </div>
+
+    <div id="footer"></div>
+
+    <script src="/js/core/config.js"></script>
+    <script src="/js/core/utils.js"></script>
+    <script src="/js/core/api.js"></script>
+    <script src="/js/modules/auth.js"></script>
+    <script src="/js/modules/cart.js"></script>
+    <script src="/js/modules/admin.js"></script>
+    <script src="/js/components/header.js"></script>
+    <script src="/js/components/footer.js"></script>
+    <script src="/js/components/pagination.js"></script>
+    <script src="/js/components/modal.js"></script>
+    <script src="/js/components/loading.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>
