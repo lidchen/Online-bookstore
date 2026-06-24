@@ -20,6 +20,9 @@ const App = {
         });
 
         try {
+            // 根据当前页面路径计算相对根路径
+            const basePath = path.startsWith('/admin/') ? '../' : './';
+
             // 渲染公共组件（仅当页面包含对应容器时渲染）
             if (document.getElementById('header')) Header.render();
             if (document.getElementById('footer')) Footer.render();
@@ -35,7 +38,7 @@ const App = {
             // 已登录用户访问登录/注册页 → 跳转首页
             if (Utils.isPageInList(authPages) && Utils.checkAuth()) {
                 console.log('[App] Already logged in, redirecting to index.html');
-                window.location.href = './index.html';
+                window.location.href = `${basePath}index.html`;
                 console.groupEnd();
                 return;
             }
@@ -43,7 +46,7 @@ const App = {
             // 未登录访问需要登录的页面 → 跳转登录页
             if (Utils.isPageInList(needAuthPages) && !Utils.checkAuth()) {
                 console.log('[App] Not authenticated, redirecting to login.html');
-                window.location.href = './login.html';
+                window.location.href = `${basePath}login.html`;
                 console.groupEnd();
                 return;
             }
@@ -52,7 +55,7 @@ const App = {
             if (Utils.isPageInList(adminPages) && !Utils.isAdmin()) {
                 console.warn('[App] Non-admin user tried to access admin page');
                 Utils.showMessage('无权限访问后台', 'error');
-                setTimeout(() => { window.location.href = './index.html'; }, 1000);
+                setTimeout(() => { window.location.href = `${basePath}index.html`; }, 1000);
                 console.groupEnd();
                 return;
             }
