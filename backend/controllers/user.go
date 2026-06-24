@@ -3,7 +3,9 @@ package controllers
 import (
 	"bookstore/models"
 	"bookstore/utils"
+	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -84,12 +86,38 @@ func Login(c *gin.Context) {
 	session.Set("user_id", user.ID)
 	session.Set("username", user.Username)
 	session.Set("role", user.Role)
-	session.Save()
+	if err := session.Save(); err != nil {
+		log.Printf("Failed to save session: %v", err)
+	}
+
+	token, err := utils.GenerateToken(utils.TokenData{
+		UserID:   user.ID,
+		Username: user.Username,
+		Role:     user.Role,
+		IssuedAt: time.Now().Unix(),
+	})
+	if err != nil {
+		log.Printf("Failed to generate token: %v", err)
+		utils.Error(c, http.StatusInternalServerError, "登录失败，请重试")
+		return
+	}
 
 	utils.Success(c, "登录成功", gin.H{
 		"id":       user.ID,
 		"username": user.Username,
 		"role":     user.Role,
+		"token":    token,
+	})
+}
+
+func CheckSession(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	username, _ := c.Get("username")
+	role, _ := c.Get("role")
+	utils.Success(c, "ok", gin.H{
+		"id":       userID,
+		"username": username,
+		"role":     role,
 	})
 }
 

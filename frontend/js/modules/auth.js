@@ -23,11 +23,15 @@ const Auth = {
             localStorage.setItem('user', JSON.stringify(res.data));
             localStorage.setItem('username', res.data.username);
             localStorage.setItem('role', res.data.role || 'user');
+            if (res.data.token) {
+                localStorage.setItem('token', res.data.token);
+            }
             console.log('[Auth] Login SUCCESS — stored user:', res.data.username, 'role:', res.data.role || 'user');
             console.log('[Auth] localStorage state:', {
                 user: !!localStorage.getItem('user'),
                 username: localStorage.getItem('username'),
-                role: localStorage.getItem('role')
+                role: localStorage.getItem('role'),
+                hasToken: !!localStorage.getItem('token')
             });
 
             Utils.showMessage('登录成功', 'success');
@@ -91,6 +95,7 @@ const Auth = {
         localStorage.removeItem('user');
         localStorage.removeItem('username');
         localStorage.removeItem('role');
+        localStorage.removeItem('token');
 
         console.log('[Auth] Logout complete — localStorage cleared');
         Utils.showMessage('已退出登录', 'info');

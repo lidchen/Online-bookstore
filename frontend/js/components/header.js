@@ -52,16 +52,18 @@ const Header = {
             </div>`;
 
         this.bindEvents();
-        if (isLoggedIn) {
-            // 延迟加载购物车 badge，避免首屏 API 调用阻塞渲染
-            // 如果返回 401 会由 api.js 统一处理（公开页面不会跳转）
-            setTimeout(() => {
-                try {
-                    Cart.updateCartBadge();
-                } catch (e) {
-                    console.log('[Header] Cart badge update skipped (Cart module may not be loaded)');
-                }
-            }, 100);
+    },
+
+    // 购物车 badge 更新由 App.init() 在路由守卫通过后统一调用
+    // 避免在受保护页面渲染时因 session 未同步导致 401 误触发登出
+    tryUpdateCartBadge() {
+        if (!Utils.checkAuth()) return;
+        try {
+            if (typeof Cart !== 'undefined' && Cart.updateCartBadge) {
+                Cart.updateCartBadge();
+            }
+        } catch (e) {
+            // Cart 模块未加载，忽略
         }
     },
 

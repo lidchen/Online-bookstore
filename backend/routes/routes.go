@@ -23,6 +23,7 @@ func SetupRoutes(r *gin.Engine) {
 		auth.Use(middleware.AuthRequired())
 		{
 			auth.POST("/logout", controllers.Logout)
+			auth.GET("/session", controllers.CheckSession)
 
 			// Cart
 			auth.GET("/cart", controllers.GetCart)

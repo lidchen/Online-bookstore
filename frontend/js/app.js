@@ -60,6 +60,12 @@ const App = {
             // 执行页面初始化
             console.log('[App] Routing to page handler for:', path);
             this.initPage(path);
+
+            // 路由守卫通过后，安全地更新购物车 badge
+            // 放在 initPage 之后确保页面 DOM 已就绪
+            if (!Utils.isPageInList(authPages)) {
+                setTimeout(() => Header.tryUpdateCartBadge(), 200);
+            }
         } catch (err) {
             console.error('[App] Fatal error during init:', err);
             console.error('[App] Error stack:', err.stack);

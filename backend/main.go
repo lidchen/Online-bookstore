@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
 	"bookstore/config"
@@ -35,6 +36,8 @@ func main() {
 		Path:     "/",
 		MaxAge:   86400 * 7,
 		HttpOnly: true,
+		SameSite: http.SameSiteLaxMode,
+		Secure:   false,
 	})
 	r.Use(sessions.Sessions("bookstore_session", store))
 

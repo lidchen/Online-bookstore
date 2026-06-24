@@ -13,6 +13,7 @@ const API = {
         console.group(`[API] ${method} ${fullUrl}`);
         console.log('Request payload:', options.body || '(none)');
 
+        const token = localStorage.getItem('token');
         const config = {
             credentials: 'include',
             headers: {
@@ -20,6 +21,9 @@ const API = {
             },
             ...options
         };
+        if (token) {
+            config.headers['Authorization'] = 'Bearer ' + token;
+        }
 
         if (options.body && typeof options.body === 'object' && !(options.body instanceof FormData)) {
             config.body = JSON.stringify(options.body);
@@ -58,25 +62,24 @@ const API = {
             }
 
             if (data.code === 401) {
-                // 需要登录才能访问的页面
+                // 如果 localStorage 认为已登录但后端返回 401，说明 session 已失效
+                if (Utils.checkAuth()) {
+                    console.warn('[API] 401 received but localStorage says logged in — clearing stale auth state');
+                    localStorage.removeItem('user');
+                    localStorage.removeItem('username');
+                    localStorage.removeItem('role');
+                    localStorage.removeItem('token');
+                }
+
                 const authRequiredPages = [
                     '/cart.html', '/order_confirm.html', '/order_pay.html',
                     '/my_orders.html', '/admin/books.html', '/admin/orders.html'
                 ];
 
                 if (Utils.isPageInList(authRequiredPages)) {
-                    // 在受保护页面收到 401 = 确实是未登录，清除状态并跳转
-                    console.warn('[API] 401 on auth-required page — logging out and redirecting');
-                    localStorage.removeItem('user');
-                    localStorage.removeItem('username');
-                    localStorage.removeItem('role');
+                    console.warn('[API] 401 on auth-required page — redirecting to login');
                     window.location.href = './login.html';
-                    console.groupEnd();
-                    return data;
                 }
-
-                // 在公开页面收到 401 = session cookie 可能还未同步，不改变本地登录状态
-                console.warn('[API] 401 on public page — session cookie may not be synced yet, keeping localStorage auth state');
                 console.groupEnd();
                 return data;
             }
@@ -135,9 +138,15 @@ const API = {
         const startTime = performance.now();
 
         try {
+            const token = localStorage.getItem('token');
+            const headers = {};
+            if (token) {
+                headers['Authorization'] = 'Bearer ' + token;
+            }
             const response = await fetch(fullUrl, {
                 method: 'POST',
                 credentials: 'include',
+                headers,
                 body: formData
             });
             const elapsed = (performance.now() - startTime).toFixed(0);
@@ -148,22 +157,23 @@ const API = {
             console.groupEnd();
 
             if (data.code === 401) {
+                if (Utils.checkAuth()) {
+                    console.warn('[API] 401 on upload but localStorage says logged in — clearing stale auth state');
+                    localStorage.removeItem('user');
+                    localStorage.removeItem('username');
+                    localStorage.removeItem('role');
+                    localStorage.removeItem('token');
+                }
+
                 const authRequiredPages = [
                     '/cart.html', '/order_confirm.html', '/order_pay.html',
                     '/my_orders.html', '/admin/books.html', '/admin/orders.html'
                 ];
 
                 if (Utils.isPageInList(authRequiredPages)) {
-                    console.warn('[API] 401 on upload, auth-required page — logging out');
-                    localStorage.removeItem('user');
-                    localStorage.removeItem('username');
-                    localStorage.removeItem('role');
+                    console.warn('[API] 401 on upload, auth-required page — redirecting to login');
                     window.location.href = './login.html';
-                    console.groupEnd();
-                    return data;
                 }
-
-                console.warn('[API] 401 on upload, public page — keeping localStorage auth state');
                 console.groupEnd();
                 return data;
             }
