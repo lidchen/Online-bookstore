@@ -3,12 +3,18 @@
  */
 const Cart = {
     async loadCart() {
-        return await API.get('/cart');
+        console.log('[Cart] Loading cart...');
+        const res = await API.get('/cart');
+        console.log('[Cart] Load result — code:', res.code, 'items:', res.data ? res.data.length : 0);
+        return res;
     },
 
     renderCart(cartItems, containerId = 'cart-list') {
         const container = document.getElementById(containerId);
-        if (!container) return;
+        if (!container) {
+            console.error('[Cart] Container #' + containerId + ' not found!');
+            return;
+        }
 
         if (!cartItems || cartItems.length === 0) {
             container.innerHTML = `
@@ -82,11 +88,14 @@ const Cart = {
     },
 
     async addToCart(bookId, quantity = 1) {
+        console.log('[Cart] Adding to cart — bookId:', bookId, 'quantity:', quantity);
         const res = await API.post('/cart', { book_id: bookId, quantity });
         if (res.code === 200) {
+            console.log('[Cart] Added to cart successfully');
             Utils.showMessage('已加入购物车', 'success');
             this.updateCartBadge();
         } else {
+            console.warn('[Cart] Add to cart failed — code:', res.code, 'message:', res.message);
             Utils.showMessage(res.message || '加入购物车失败', 'error');
         }
         return res;
@@ -94,10 +103,12 @@ const Cart = {
 
     async updateQuantity(bookId, quantity) {
         if (quantity < 1) return;
+        console.log('[Cart] Updating quantity — bookId:', bookId, 'newQty:', quantity);
         const res = await API.put(`/cart/${bookId}`, { quantity });
         if (res.code === 200) {
             this.loadAndRender();
         } else {
+            console.warn('[Cart] Update quantity failed — code:', res.code, 'message:', res.message);
             Utils.showMessage(res.message || '更新失败', 'error');
         }
         return res;
@@ -105,12 +116,15 @@ const Cart = {
 
     async removeItem(bookId) {
         Modal.showConfirm('确定要删除该商品吗？', async () => {
+            console.log('[Cart] Removing item — bookId:', bookId);
             const res = await API.del(`/cart/${bookId}`);
             if (res.code === 200) {
+                console.log('[Cart] Item removed successfully');
                 Utils.showMessage('已删除', 'success');
                 this.loadAndRender();
                 this.updateCartBadge();
             } else {
+                console.warn('[Cart] Remove item failed — code:', res.code, 'message:', res.message);
                 Utils.showMessage(res.message || '删除失败', 'error');
             }
         });
@@ -118,12 +132,15 @@ const Cart = {
 
     async clearCart() {
         Modal.showConfirm('确定要清空购物车吗？此操作不可恢复。', async () => {
+            console.log('[Cart] Clearing cart...');
             const res = await API.del('/cart');
             if (res.code === 200) {
+                console.log('[Cart] Cart cleared successfully');
                 Utils.showMessage('购物车已清空', 'success');
                 this.loadAndRender();
                 this.updateCartBadge();
             } else {
+                console.warn('[Cart] Clear cart failed — code:', res.code, 'message:', res.message);
                 Utils.showMessage(res.message || '清空失败', 'error');
             }
         });

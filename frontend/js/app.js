@@ -6,76 +6,111 @@ const App = {
 
     init() {
         const path = window.location.pathname;
+        console.group('[App] Initializing');
+        console.log('Current path:', path);
+        console.log('Full URL:', window.location.href);
+        console.log('API base:', CONFIG.API_BASE);
+        console.log('Auth state:', {
+            isLoggedIn: Utils.checkAuth(),
+            isAdmin: Utils.isAdmin(),
+            username: localStorage.getItem('username'),
+            hasUserData: !!localStorage.getItem('user')
+        });
 
-        // 渲染公共组件
-        Header.render();
-        Footer.render();
+        try {
+            // 渲染公共组件
+            Header.render();
+            Footer.render();
 
-        // 路由守卫规则
-        const needAuthPages = [
-            '/cart.html', '/order_confirm.html', '/order_pay.html',
-            '/my_orders.html', '/admin/books.html', '/admin/orders.html'
-        ];
-        const adminPages = ['/admin/books.html', '/admin/orders.html'];
-        const authPages = ['/login.html', '/register.html'];
+            // 路由守卫规则
+            const needAuthPages = [
+                '/cart.html', '/order_confirm.html', '/order_pay.html',
+                '/my_orders.html', '/admin/books.html', '/admin/orders.html'
+            ];
+            const adminPages = ['/admin/books.html', '/admin/orders.html'];
+            const authPages = ['/login.html', '/register.html'];
 
-        // 已登录用户访问登录/注册页 → 跳转首页
-        if (authPages.includes(path) && Utils.checkAuth()) {
-            window.location.href = './index.html';
-            return;
+            // 已登录用户访问登录/注册页 → 跳转首页
+            if (authPages.includes(path) && Utils.checkAuth()) {
+                console.log('[App] Already logged in, redirecting to index.html');
+                window.location.href = './index.html';
+                console.groupEnd();
+                return;
+            }
+
+            // 未登录访问需要登录的页面 → 跳转登录页
+            if (needAuthPages.includes(path) && !Utils.checkAuth()) {
+                console.log('[App] Not authenticated, redirecting to login.html');
+                window.location.href = './login.html';
+                console.groupEnd();
+                return;
+            }
+
+            // 非管理员访问后台页面 → 跳转首页
+            if (adminPages.includes(path) && !Utils.isAdmin()) {
+                console.warn('[App] Non-admin user tried to access admin page');
+                Utils.showMessage('无权限访问后台', 'error');
+                setTimeout(() => { window.location.href = './index.html'; }, 1000);
+                console.groupEnd();
+                return;
+            }
+
+            // 执行页面初始化
+            console.log('[App] Routing to page handler for:', path);
+            this.initPage(path);
+        } catch (err) {
+            console.error('[App] Fatal error during init:', err);
+            console.error('[App] Error stack:', err.stack);
         }
 
-        // 未登录访问需要登录的页面 → 跳转登录页
-        if (needAuthPages.includes(path) && !Utils.checkAuth()) {
-            window.location.href = './login.html';
-            return;
-        }
-
-        // 非管理员访问后台页面 → 跳转首页
-        if (adminPages.includes(path) && !Utils.isAdmin()) {
-            Utils.showMessage('无权限访问后台', 'error');
-            setTimeout(() => { window.location.href = './index.html'; }, 1000);
-            return;
-        }
-
-        // 执行页面初始化
-        this.initPage(path);
+        console.groupEnd();
     },
 
     initPage(path) {
         switch (path) {
             case '/index.html':
             case '/':
+                console.log('[App] → initHome()');
                 this.initHome();
                 break;
             case '/login.html':
+                console.log('[App] → initLogin()');
                 this.initLogin();
                 break;
             case '/register.html':
+                console.log('[App] → initRegister()');
                 this.initRegister();
                 break;
             case '/book_detail.html':
+                console.log('[App] → initBookDetail()');
                 this.initBookDetail();
                 break;
             case '/cart.html':
+                console.log('[App] → initCart()');
                 this.initCart();
                 break;
             case '/order_confirm.html':
+                console.log('[App] → initOrderConfirm()');
                 this.initOrderConfirm();
                 break;
             case '/order_pay.html':
+                console.log('[App] → initOrderPay()');
                 this.initOrderPay();
                 break;
             case '/my_orders.html':
+                console.log('[App] → initMyOrders()');
                 this.initMyOrders();
                 break;
             case '/admin/books.html':
+                console.log('[App] → initAdminBooks()');
                 this.initAdminBooks();
                 break;
             case '/admin/orders.html':
+                console.log('[App] → initAdminOrders()');
                 this.initAdminOrders();
                 break;
             default:
+                console.warn('[App] Unknown path, no handler:', path);
                 break;
         }
     },
@@ -134,57 +169,112 @@ const App = {
 
     // ===== 登录页 =====
     initLogin() {
+        console.log('[Login Page] Setting up form handler');
         const form = document.getElementById('login-form');
-        if (!form) return;
+        if (!form) {
+            console.error('[Login Page] FORM NOT FOUND: #login-form element does not exist in the DOM!');
+            return;
+        }
+        console.log('[Login Page] Form found, binding submit event');
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value.trim();
+            console.group('[Login Form] Submit');
+
+            const usernameEl = document.getElementById('username');
+            const passwordEl = document.getElementById('password');
+
+            if (!usernameEl || !passwordEl) {
+                console.error('[Login Form] Input elements missing! username:', !!usernameEl, 'password:', !!passwordEl);
+                console.groupEnd();
+                return;
+            }
+
+            const username = usernameEl.value.trim();
+            const password = passwordEl.value.trim();
+            console.log('Username:', username || '(empty)');
+            console.log('Password provided:', !!password);
 
             let hasError = false;
             if (!username) {
                 document.getElementById('username-error').textContent = '请输入用户名';
+                console.warn('[Login Form] Validation: username empty');
                 hasError = true;
             } else {
                 document.getElementById('username-error').textContent = '';
             }
             if (!password) {
                 document.getElementById('password-error').textContent = '请输入密码';
+                console.warn('[Login Form] Validation: password empty');
                 hasError = true;
             } else {
                 document.getElementById('password-error').textContent = '';
             }
-            if (hasError) return;
+            if (hasError) {
+                console.groupEnd();
+                return;
+            }
 
             const btn = document.getElementById('login-btn');
             btn.disabled = true;
             btn.textContent = '登录中...';
 
-            await Auth.login(username, password);
+            console.log('[Login Form] Calling Auth.login()...');
+            const result = await Auth.login(username, password);
 
-            btn.disabled = false;
-            btn.textContent = '登录';
+            console.log('[Login Form] Auth.login() returned, code:', result.code);
+            // 如果登录失败，恢复按钮状态
+            if (result.code !== 200) {
+                btn.disabled = false;
+                btn.textContent = '登录';
+                console.log('[Login Form] Button re-enabled (login failed)');
+            }
+            // 如果登录成功，Auth.login 内部会处理跳转，不需要恢复按钮
+
+            console.groupEnd();
         });
     },
 
     // ===== 注册页 =====
     initRegister() {
+        console.log('[Register Page] Setting up form handler');
         const form = document.getElementById('register-form');
-        if (!form) return;
+        if (!form) {
+            console.error('[Register Page] FORM NOT FOUND: #register-form element does not exist in the DOM!');
+            return;
+        }
+        console.log('[Register Page] Form found, binding submit event');
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const confirmPassword = document.getElementById('confirm-password').value.trim();
+            console.group('[Register Form] Submit');
+
+            const usernameEl = document.getElementById('username');
+            const passwordEl = document.getElementById('password');
+            const confirmEl = document.getElementById('confirm-password');
+
+            if (!usernameEl || !passwordEl || !confirmEl) {
+                console.error('[Register Form] Input elements missing!', {
+                    username: !!usernameEl, password: !!passwordEl, confirm: !!confirmEl
+                });
+                console.groupEnd();
+                return;
+            }
+
+            const username = usernameEl.value.trim();
+            const password = passwordEl.value.trim();
+            const confirmPassword = confirmEl.value.trim();
+            console.log('Username:', username || '(empty)');
+            console.log('Password provided:', !!password, 'Confirm provided:', !!confirmPassword);
 
             let hasError = false;
             if (!username) {
                 document.getElementById('username-error').textContent = '请输入用户名';
+                console.warn('[Register Form] Validation: username empty');
                 hasError = true;
             } else if (username.length < 3) {
                 document.getElementById('username-error').textContent = '用户名至少3个字符';
+                console.warn('[Register Form] Validation: username too short (' + username.length + ' chars)');
                 hasError = true;
             } else {
                 document.getElementById('username-error').textContent = '';
@@ -192,9 +282,11 @@ const App = {
 
             if (!password) {
                 document.getElementById('password-error').textContent = '请输入密码';
+                console.warn('[Register Form] Validation: password empty');
                 hasError = true;
             } else if (password.length < 6) {
                 document.getElementById('password-error').textContent = '密码至少6个字符';
+                console.warn('[Register Form] Validation: password too short (' + password.length + ' chars)');
                 hasError = true;
             } else {
                 document.getElementById('password-error').textContent = '';
@@ -202,21 +294,32 @@ const App = {
 
             if (password !== confirmPassword) {
                 document.getElementById('confirm-error').textContent = '两次密码不一致';
+                console.warn('[Register Form] Validation: passwords do not match');
                 hasError = true;
             } else {
                 document.getElementById('confirm-error').textContent = '';
             }
 
-            if (hasError) return;
+            if (hasError) {
+                console.groupEnd();
+                return;
+            }
 
             const btn = document.getElementById('register-btn');
             btn.disabled = true;
             btn.textContent = '注册中...';
 
-            await Auth.register(username, password);
+            console.log('[Register Form] Calling Auth.register()...');
+            const result = await Auth.register(username, password);
 
-            btn.disabled = false;
-            btn.textContent = '注册';
+            console.log('[Register Form] Auth.register() returned, code:', result.code);
+            if (result.code !== 200) {
+                btn.disabled = false;
+                btn.textContent = '注册';
+                console.log('[Register Form] Button re-enabled (register failed)');
+            }
+
+            console.groupEnd();
         });
     },
 
@@ -483,4 +586,7 @@ const App = {
 };
 
 // 页面加载完成后初始化
-document.addEventListener('DOMContentLoaded', () => App.init());
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('[App] DOM ready, starting application...');
+    App.init();
+});

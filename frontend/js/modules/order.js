@@ -3,16 +3,25 @@
  */
 const Order = {
     async createOrder(address, phone) {
-        return await API.post('/orders', { address, phone });
+        console.log('[Order] Creating order — address:', address, 'phone:', phone);
+        const res = await API.post('/orders', { address, phone });
+        console.log('[Order] Create result — code:', res.code, 'orderId:', res.data?.id);
+        return res;
     },
 
     async loadOrders() {
-        return await API.get('/orders');
+        console.log('[Order] Loading orders...');
+        const res = await API.get('/orders');
+        console.log('[Order] Load result — code:', res.code, 'count:', res.data ? res.data.length : 0);
+        return res;
     },
 
     renderOrders(orders, containerId = 'order-list') {
         const container = document.getElementById(containerId);
-        if (!container) return;
+        if (!container) {
+            console.error('[Order] Container #' + containerId + ' not found!');
+            return;
+        }
 
         if (!orders || orders.length === 0) {
             container.innerHTML = `
@@ -97,11 +106,14 @@ const Order = {
 
     async payOrder(orderId) {
         Modal.showConfirm('确认支付该订单？', async () => {
+            console.log('[Order] Paying order:', orderId);
             const res = await API.put(`/orders/${orderId}/pay`);
             if (res.code === 200) {
+                console.log('[Order] Payment successful');
                 Utils.showMessage('支付成功', 'success');
                 this.loadAndRender();
             } else {
+                console.warn('[Order] Payment failed — code:', res.code, 'message:', res.message);
                 Utils.showMessage(res.message || '支付失败', 'error');
             }
         });
@@ -109,11 +121,14 @@ const Order = {
 
     async cancelOrder(orderId) {
         Modal.showConfirm('确定要取消该订单吗？', async () => {
+            console.log('[Order] Cancelling order:', orderId);
             const res = await API.put(`/orders/${orderId}/cancel`);
             if (res.code === 200) {
+                console.log('[Order] Order cancelled successfully');
                 Utils.showMessage('订单已取消', 'success');
                 this.loadAndRender();
             } else {
+                console.warn('[Order] Cancel failed — code:', res.code, 'message:', res.message);
                 Utils.showMessage(res.message || '取消失败', 'error');
             }
         });
@@ -121,11 +136,14 @@ const Order = {
 
     async confirmOrder(orderId) {
         Modal.showConfirm('确认已收到货物？', async () => {
+            console.log('[Order] Confirming receipt for order:', orderId);
             const res = await API.put(`/orders/${orderId}/confirm`);
             if (res.code === 200) {
+                console.log('[Order] Receipt confirmed successfully');
                 Utils.showMessage('确认收货成功', 'success');
                 this.loadAndRender();
             } else {
+                console.warn('[Order] Confirm receipt failed — code:', res.code, 'message:', res.message);
                 Utils.showMessage(res.message || '确认失败', 'error');
             }
         });

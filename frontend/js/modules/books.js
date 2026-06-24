@@ -15,12 +15,18 @@ const Books = {
         if (categoryId > 0) url += `&category_id=${categoryId}`;
         if (keyword) url += `&keyword=${encodeURIComponent(keyword)}`;
 
-        return await API.get(url);
+        console.log('[Books] Loading — page:', page, 'category:', categoryId, 'keyword:', keyword || '(none)');
+        const res = await API.get(url);
+        console.log('[Books] Load result — code:', res.code, 'total:', res.data?.total, 'items:', res.data?.list?.length);
+        return res;
     },
 
     renderBooks(books, containerId = 'book-list') {
         const container = document.getElementById(containerId);
-        if (!container) return;
+        if (!container) {
+            console.error('[Books] Container #' + containerId + ' not found!');
+            return;
+        }
 
         if (!books || books.length === 0) {
             container.innerHTML = `
@@ -107,7 +113,10 @@ const Books = {
     },
 
     async loadBookDetail(bookId) {
-        return await API.get(`/books/${bookId}`);
+        console.log('[Books] Loading detail for book:', bookId);
+        const res = await API.get(`/books/${bookId}`);
+        console.log('[Books] Detail result — code:', res.code, 'hasData:', !!res.data);
+        return res;
     },
 
     renderBookDetail(book) {

@@ -12,12 +12,18 @@ const Admin = {
         this.bookKeyword = keyword;
         let url = `/admin/books?page=${page}&page_size=${CONFIG.PAGE_SIZE}`;
         if (keyword) url += `&keyword=${encodeURIComponent(keyword)}`;
-        return await API.get(url);
+        console.log('[Admin] Loading books — page:', page, 'keyword:', keyword || '(none)');
+        const res = await API.get(url);
+        console.log('[Admin] Books load result — code:', res.code, 'total:', res.data?.total);
+        return res;
     },
 
     renderBooksTable(books, containerId = 'admin-book-list') {
         const container = document.getElementById(containerId);
-        if (!container) return;
+        if (!container) {
+            console.error('[Admin] Container #' + containerId + ' not found!');
+            return;
+        }
 
         if (!books || books.length === 0) {
             container.innerHTML = `
@@ -80,20 +86,25 @@ const Admin = {
     },
 
     async createBook(formData) {
+        console.log('[Admin] Creating book...');
         return await API.upload('/admin/books', formData);
     },
 
     async updateBook(id, formData) {
+        console.log('[Admin] Updating book:', id);
         return await API.upload(`/admin/books/${id}`, formData);
     },
 
     async deleteBook(id) {
         Modal.showConfirm('确定要删除该图书吗？此操作不可恢复。', async () => {
+            console.log('[Admin] Deleting book:', id);
             const res = await API.del(`/admin/books/${id}`);
             if (res.code === 200) {
+                console.log('[Admin] Book deleted successfully');
                 Utils.showMessage('删除成功', 'success');
                 this.loadAndRenderBooks();
             } else {
+                console.warn('[Admin] Delete failed — code:', res.code, 'message:', res.message);
                 Utils.showMessage(res.message || '删除失败', 'error');
             }
         });
@@ -103,11 +114,14 @@ const Admin = {
         const newStatus = currentStatus === 1 ? 0 : 1;
         const action = newStatus === 1 ? '上架' : '下架';
         Modal.showConfirm(`确定要${action}该图书吗？`, async () => {
+            console.log('[Admin] Toggling book status — id:', id, 'newStatus:', newStatus);
             const res = await API.patch(`/admin/books/${id}/status`, { status: newStatus });
             if (res.code === 200) {
+                console.log('[Admin] Status toggled successfully');
                 Utils.showMessage(`${action}成功`, 'success');
                 this.loadAndRenderBooks();
             } else {
+                console.warn('[Admin] Toggle status failed — code:', res.code, 'message:', res.message);
                 Utils.showMessage(res.message || '操作失败', 'error');
             }
         });
@@ -116,6 +130,8 @@ const Admin = {
     showBookForm(book = null) {
         const isEdit = !!book;
         const title = isEdit ? '编辑图书' : '添加图书';
+        console.log('[Admin] Showing book form — mode:', isEdit ? 'edit' : 'create', 'bookId:', book?.id);
+
         let bodyHtml = `
             <div class="form-group">
                 <label>书名</label>
@@ -169,6 +185,7 @@ const Admin = {
                 const coverFile = document.getElementById('book-cover').files[0];
 
                 if (!titleVal || !authorVal || !priceVal || !categoryVal) {
+                    console.warn('[Admin] Book form validation failed — missing required fields');
                     Utils.showMessage('请填写必要信息', 'error');
                     return false;
                 }
@@ -202,26 +219,38 @@ const Admin = {
     },
 
     editBook(id) {
+        console.log('[Admin] Fetching book for edit:', id);
         Loading.show();
         API.get(`/books/${id}`).then(res => {
             Loading.hide();
-            if (res.code === 200) {
+            if (res.code === 200 && res.data) {
                 this.showBookForm(res.data);
             } else {
+                console.warn('[Admin] Failed to fetch book for edit — code:', res.code);
                 Utils.showMessage('获取图书信息失败', 'error');
             }
+        }).catch(err => {
+            Loading.hide();
+            console.error('[Admin] Error fetching book for edit:', err);
+            Utils.showMessage('获取图书信息失败', 'error');
         });
     },
 
     // ===== 订单管理 =====
     async loadOrders(page = 1) {
         this.currentOrderPage = page;
-        return await API.get(`/admin/orders?page=${page}&page_size=${CONFIG.PAGE_SIZE}`);
+        console.log('[Admin] Loading orders — page:', page);
+        const res = await API.get(`/admin/orders?page=${page}&page_size=${CONFIG.PAGE_SIZE}`);
+        console.log('[Admin] Orders load result — code:', res.code, 'total:', res.data?.total);
+        return res;
     },
 
     renderOrdersTable(orders, containerId = 'admin-order-list') {
         const container = document.getElementById(containerId);
-        if (!container) return;
+        if (!container) {
+            console.error('[Admin] Container #' + containerId + ' not found!');
+            return;
+        }
 
         if (!orders || orders.length === 0) {
             container.innerHTML = `
@@ -276,11 +305,14 @@ const Admin = {
 
     async shipOrder(orderId) {
         Modal.showConfirm('确认发货该订单？', async () => {
+            console.log('[Admin] Shipping order:', orderId);
             const res = await API.patch(`/admin/orders/${orderId}/ship`);
             if (res.code === 200) {
+                console.log('[Admin] Order shipped successfully');
                 Utils.showMessage('发货成功', 'success');
                 this.loadAndRenderOrders();
             } else {
+                console.warn('[Admin] Ship failed — code:', res.code, 'message:', res.message);
                 Utils.showMessage(res.message || '发货失败', 'error');
             }
         });

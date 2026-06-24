@@ -4,11 +4,16 @@
 const Header = {
     render() {
         const headerEl = document.getElementById('header');
-        if (!headerEl) return;
+        if (!headerEl) {
+            console.warn('[Header] #header element not found, skipping render');
+            return;
+        }
 
         const isLoggedIn = Utils.checkAuth();
         const isAdmin = Utils.isAdmin();
         const username = localStorage.getItem('username') || '';
+
+        console.log('[Header] Rendering — loggedIn:', isLoggedIn, 'isAdmin:', isAdmin, 'username:', username);
 
         headerEl.innerHTML = `
             <div class="header">
@@ -61,6 +66,7 @@ const Header = {
             if (searchInput) {
                 const keyword = searchInput.value.trim();
                 if (keyword) {
+                    console.log('[Header] Search:', keyword);
                     window.location.href = `./index.html?keyword=${encodeURIComponent(keyword)}`;
                 }
             }
