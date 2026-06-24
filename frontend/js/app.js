@@ -517,15 +517,8 @@ const App = {
     async initAdminBooks() {
         const data = await Admin.loadAndRenderBooks();
         if (data) {
-            Pagination.render('admin-book-pagination', data.total || 0, data.page || 1, CONFIG.PAGE_SIZE, async (page) => {
-                const res = await Admin.loadBooks(page, Admin.bookKeyword);
-                if (res.code === 200) {
-                    const d = res.data;
-                    Admin.renderBooksTable(d.list || [], 'admin-book-list');
-                    Pagination.render('admin-book-pagination', d.total || 0, d.page || 1, CONFIG.PAGE_SIZE, (p) => {
-                        this.initAdminBooksPage(p);
-                    });
-                }
+            Pagination.render('admin-book-pagination', data.total || 0, data.page || 1, CONFIG.PAGE_SIZE, (page) => {
+                this.initAdminBooksPage(page);
             });
         }
 
@@ -536,27 +529,23 @@ const App = {
         const searchInput = document.getElementById('admin-book-search');
         const searchBtn = document.getElementById('admin-book-search-btn');
         if (searchBtn && searchInput) {
+            const renderSearchPagination = (keyword) => (page) => {
+                Admin.loadBooks(page, keyword).then(r => {
+                    if (r.code === 200) {
+                        const d = r.data;
+                        Admin.renderBooksTable(d.list || [], 'admin-book-list');
+                        Pagination.render('admin-book-pagination', d.total || 0, d.page || 1, CONFIG.PAGE_SIZE, renderSearchPagination(keyword));
+                    }
+                });
+            };
+
             searchBtn.addEventListener('click', async () => {
                 const keyword = searchInput.value.trim();
                 const res = await Admin.loadBooks(1, keyword);
                 if (res.code === 200) {
                     const d = res.data;
                     Admin.renderBooksTable(d.list || [], 'admin-book-list');
-                    Pagination.render('admin-book-pagination', d.total || 0, 1, CONFIG.PAGE_SIZE, (p) => {
-                        Admin.loadBooks(p, keyword).then(r => {
-                            if (r.code === 200) {
-                                const dd = r.data;
-                                Admin.renderBooksTable(dd.list || [], 'admin-book-list');
-                                Pagination.render('admin-book-pagination', dd.total || 0, dd.page || 1, CONFIG.PAGE_SIZE, (pp) => {
-                                    Admin.loadBooks(pp, keyword).then(rr => {
-                                        if (rr.code === 200) {
-                                            Admin.renderBooksTable(rr.data.list || [], 'admin-book-list');
-                                        }
-                                    });
-                                });
-                            }
-                        });
-                    });
+                    Pagination.render('admin-book-pagination', d.total || 0, 1, CONFIG.PAGE_SIZE, renderSearchPagination(keyword));
                 }
             });
         }
@@ -574,21 +563,19 @@ const App = {
 
     // ===== 后台订单管理 =====
     async initAdminOrders() {
-        const data = await Admin.loadAndRenderOrders();
-        if (data) {
-            Pagination.render('admin-order-pagination', data.total || 0, data.page || 1, CONFIG.PAGE_SIZE, async (page) => {
-                const res = await Admin.loadOrders(page);
-                if (res.code === 200) {
-                    Admin.renderOrdersTable(res.data.list || [], 'admin-order-list');
-                    Pagination.render('admin-order-pagination', res.data.total || 0, res.data.page || 1, CONFIG.PAGE_SIZE, (p) => {
-                        Admin.loadOrders(p).then(r => {
-                            if (r.code === 200) {
-                                Admin.renderOrdersTable(r.data.list || [], 'admin-order-list');
-                            }
-                        });
-                    });
+        const renderOrdersPagination = (page) => {
+            Admin.loadOrders(page).then(r => {
+                if (r.code === 200) {
+                    const d = r.data;
+                    Admin.renderOrdersTable(d.list || [], 'admin-order-list');
+                    Pagination.render('admin-order-pagination', d.total || 0, d.page || 1, CONFIG.PAGE_SIZE, renderOrdersPagination);
                 }
             });
+        };
+
+        const data = await Admin.loadAndRenderOrders();
+        if (data) {
+            Pagination.render('admin-order-pagination', data.total || 0, data.page || 1, CONFIG.PAGE_SIZE, renderOrdersPagination);
         }
     }
 };
