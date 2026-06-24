@@ -495,6 +495,7 @@ const App = {
                 payBtn.textContent = '支付中...';
 
                 const res = await Order.payOrder(orderId);
+                // res 为 undefined 表示用户取消了支付确认
                 if (res && res.code === 200) {
                     setTimeout(() => {
                         window.location.href = './my_orders.html';

@@ -118,6 +118,9 @@ const Order = {
                     Utils.showMessage(res.message || '支付失败', 'error');
                 }
                 resolve(res);
+            }, () => {
+                // 用户取消支付确认
+                resolve(undefined);
             });
         });
     },

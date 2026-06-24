@@ -50,12 +50,13 @@ const Modal = {
         });
     },
 
-    showConfirm(message, onConfirm) {
+    showConfirm(message, onConfirm, onCancel) {
         this.show({
             title: '确认操作',
             content: `<p style="font-size:15px;color:var(--text);">${message}</p>`,
             width: '400px',
-            onConfirm
+            onConfirm,
+            onCancel
         });
     },
 

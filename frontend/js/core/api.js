@@ -78,7 +78,9 @@ const API = {
 
                 if (Utils.isPageInList(authRequiredPages)) {
                     console.warn('[API] 401 on auth-required page — redirecting to login');
-                    window.location.href = './login.html';
+                    const currentPath = Utils.getPagePath();
+                    const loginPath = currentPath.startsWith('/admin/') ? '../login.html' : './login.html';
+                    window.location.href = loginPath;
                 }
                 console.groupEnd();
                 return data;
@@ -172,7 +174,9 @@ const API = {
 
                 if (Utils.isPageInList(authRequiredPages)) {
                     console.warn('[API] 401 on upload, auth-required page — redirecting to login');
-                    window.location.href = './login.html';
+                    const currentPath = Utils.getPagePath();
+                    const loginPath = currentPath.startsWith('/admin/') ? '../login.html' : './login.html';
+                    window.location.href = loginPath;
                 }
                 console.groupEnd();
                 return data;

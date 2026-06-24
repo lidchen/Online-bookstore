@@ -45,8 +45,9 @@
 .header .logo span {
     background: linear-gradient(135deg, var(--primary), #764ba2);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
 }
 
 .header .header-search {
@@ -336,8 +337,9 @@
     font-weight: 700;
     background: linear-gradient(135deg, var(--primary), #764ba2);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
 }
 
 .auth-card .auth-subtitle {
