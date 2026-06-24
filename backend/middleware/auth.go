@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"bookstore/utils"
-	"net/http"
+	"strings"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -10,6 +10,21 @@ import (
 
 func AuthRequired() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		// Token-based auth via Authorization header
+		authHeader := c.GetHeader("Authorization")
+		if strings.HasPrefix(authHeader, "Bearer ") {
+			token := strings.TrimPrefix(authHeader, "Bearer ")
+			data, err := utils.ParseToken(token)
+			if err == nil {
+				c.Set("user_id", data.UserID)
+				c.Set("username", data.Username)
+				c.Set("role", data.Role)
+				c.Next()
+				return
+			}
+		}
+
+		// Fallback: session cookie
 		session := sessions.Default(c)
 		userID := session.Get("user_id")
 		if userID == nil {
@@ -26,8 +41,7 @@ func AuthRequired() gin.HandlerFunc {
 
 func AdminRequired() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		session := sessions.Default(c)
-		role := session.Get("role")
+		role, _ := c.Get("role")
 		if role == nil || role.(string) != "admin" {
 			utils.Forbidden(c)
 			c.Abort()
@@ -51,21 +65,4 @@ func GetCurrentUserRole(c *gin.Context) string {
 		return ""
 	}
 	return role.(string)
-}
-
-// Allow methods for OPTIONS requests
-func CORSMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Header("Access-Control-Allow-Origin", "http://localhost:5500")
-		c.Header("Access-Control-Allow-Credentials", "true")
-		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
-		c.Header("Access-Control-Allow-Headers", "Content-Type, Authorization")
-
-		if c.Request.Method == http.MethodOptions {
-			c.AbortWithStatus(http.StatusNoContent)
-			return
-		}
-
-		c.Next()
-	}
 }

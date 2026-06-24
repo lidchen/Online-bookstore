@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_DB: bookstore
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123456
+      POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
     volumes:
