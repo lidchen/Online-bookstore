@@ -40,11 +40,31 @@ func main() {
 
 	r.Use(corsMiddleware())
 
+	// 上传文件目录
 	r.Static("/static", "./static")
 
-	// 从后端直接提供前端文件，这样前端和后端同源，无需跨域 cookie
+	// 从后端直接提供前端文件，前端和后端同源，无需跨域 cookie
 	// 访问 http://localhost:8080/ 即可使用完整应用
-	r.Static("/", "../frontend")
+	// NoRoute 只在没有匹配到 API 路由时才处理，不会与 /api/* 冲突
+	r.NoRoute(func(c *gin.Context) {
+		path := c.Request.URL.Path
+		// 尝试从 frontend 目录提供文件
+		filePath := "../frontend" + path
+		if _, err := os.Stat(filePath); err == nil {
+			c.File(filePath)
+			return
+		}
+		// 对 SPA 路由或目录路径，返回 index.html
+		indexPath := "../frontend" + path
+		if path == "/" || path[len(path)-1] == '/' {
+			indexPath += "index.html"
+		}
+		if _, err := os.Stat(indexPath); err == nil {
+			c.File(indexPath)
+			return
+		}
+		c.File("../frontend/index.html")
+	})
 
 	routes.SetupRoutes(r)
 
