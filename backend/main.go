@@ -31,11 +31,20 @@ func main() {
 	r := gin.Default()
 
 	store := cookie.NewStore([]byte(os.Getenv("SESSION_SECRET")))
+	store.Options(sessions.Options{
+		Path:     "/",
+		MaxAge:   86400 * 7,
+		HttpOnly: true,
+	})
 	r.Use(sessions.Sessions("bookstore_session", store))
 
 	r.Use(corsMiddleware())
 
 	r.Static("/static", "./static")
+
+	// 从后端直接提供前端文件，这样前端和后端同源，无需跨域 cookie
+	// 访问 http://localhost:8080/ 即可使用完整应用
+	r.Static("/", "../frontend")
 
 	routes.SetupRoutes(r)
 
@@ -51,10 +60,17 @@ func main() {
 
 func corsMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Header("Access-Control-Allow-Origin", "http://localhost:5500")
+		origin := c.Request.Header.Get("Origin")
+		if origin == "" {
+			origin = "*"
+		}
+		c.Header("Access-Control-Allow-Origin", origin)
 		c.Header("Access-Control-Allow-Credentials", "true")
 		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
 		c.Header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
+		// 预检请求缓存 24 小时
+		c.Header("Access-Control-Max-Age", "86400")
 
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)

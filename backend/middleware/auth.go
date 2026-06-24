@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"bookstore/utils"
-	"net/http"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -51,21 +50,4 @@ func GetCurrentUserRole(c *gin.Context) string {
 		return ""
 	}
 	return role.(string)
-}
-
-// Allow methods for OPTIONS requests
-func CORSMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Header("Access-Control-Allow-Origin", "http://localhost:5500")
-		c.Header("Access-Control-Allow-Credentials", "true")
-		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
-		c.Header("Access-Control-Allow-Headers", "Content-Type, Authorization")
-
-		if c.Request.Method == http.MethodOptions {
-			c.AbortWithStatus(http.StatusNoContent)
-			return
-		}
-
-		c.Next()
-	}
 }
