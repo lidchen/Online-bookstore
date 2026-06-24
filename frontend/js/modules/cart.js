@@ -16,7 +16,7 @@ const Cart = {
                     <div class="empty-icon">🛒</div>
                     <p>购物车是空的</p>
                     <p class="sub-text">快去挑选心仪的图书吧</p>
-                    <a href="/index.html" class="btn btn-primary mt-2">去逛逛</a>
+                    <a href="./index.html" class="btn btn-primary mt-2">去逛逛</a>
                 </div>`;
             const totalEl = document.getElementById('cart-total');
             if (totalEl) totalEl.textContent = Utils.formatPrice(0);
@@ -47,7 +47,7 @@ const Cart = {
                         <div class="flex" style="gap:12px;align-items:center;">
                             <img class="table-cover" src="${coverUrl}" alt="${Utils.escapeHtml(book.title)}" onerror="this.style.background='linear-gradient(135deg,#667eea,#764ba2)';this.style.display='block';" style="width:40px;height:52px;object-fit:cover;border-radius:4px;" />
                             <div>
-                                <a href="/book_detail.html?id=${book.id}" class="font-bold">${Utils.escapeHtml(book.title)}</a>
+                                <a href="./book_detail.html?id=${book.id}" class="font-bold">${Utils.escapeHtml(book.title)}</a>
                                 <div class="text-muted" style="font-size:12px;">${Utils.escapeHtml(book.author)}</div>
                             </div>
                         </div>

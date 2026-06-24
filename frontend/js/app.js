@@ -21,20 +21,20 @@ const App = {
 
         // 已登录用户访问登录/注册页 → 跳转首页
         if (authPages.includes(path) && Utils.checkAuth()) {
-            window.location.href = '/index.html';
+            window.location.href = './index.html';
             return;
         }
 
         // 未登录访问需要登录的页面 → 跳转登录页
         if (needAuthPages.includes(path) && !Utils.checkAuth()) {
-            window.location.href = '/login.html';
+            window.location.href = './login.html';
             return;
         }
 
         // 非管理员访问后台页面 → 跳转首页
         if (adminPages.includes(path) && !Utils.isAdmin()) {
             Utils.showMessage('无权限访问后台', 'error');
-            setTimeout(() => { window.location.href = '/index.html'; }, 1000);
+            setTimeout(() => { window.location.href = './index.html'; }, 1000);
             return;
         }
 
@@ -224,7 +224,7 @@ const App = {
     async initBookDetail() {
         const bookId = Utils.getQueryParam('id');
         if (!bookId) {
-            window.location.href = '/index.html';
+            window.location.href = './index.html';
             return;
         }
 
@@ -244,7 +244,7 @@ const App = {
                         return;
                     }
                     if (!Utils.checkAuth()) {
-                        window.location.href = '/login.html';
+                        window.location.href = './login.html';
                         return;
                     }
                     await Cart.addToCart(parseInt(bookId), quantity);
@@ -255,7 +255,7 @@ const App = {
                 <div class="empty-state">
                     <div class="empty-icon">📖</div>
                     <p>图书不存在</p>
-                    <a href="/index.html" class="btn btn-primary mt-2">返回首页</a>
+                    <a href="./index.html" class="btn btn-primary mt-2">返回首页</a>
                 </div>`;
         }
     },
@@ -272,7 +272,7 @@ const App = {
         }
         if (checkoutBtn) {
             checkoutBtn.addEventListener('click', () => {
-                window.location.href = '/order_confirm.html';
+                window.location.href = './order_confirm.html';
             });
         }
     },
@@ -289,7 +289,7 @@ const App = {
                 <div class="empty-state">
                     <div class="empty-icon">🛒</div>
                     <p>购物车为空</p>
-                    <a href="/index.html" class="btn btn-primary mt-2">去逛逛</a>
+                    <a href="./index.html" class="btn btn-primary mt-2">去逛逛</a>
                 </div>`;
             document.getElementById('submit-order-btn').style.display = 'none';
             return;
@@ -356,7 +356,7 @@ const App = {
                 if (res.code === 200 && res.data) {
                     Utils.showMessage('订单创建成功', 'success');
                     setTimeout(() => {
-                        window.location.href = `/order_pay.html?id=${res.data.id}`;
+                        window.location.href = `./order_pay.html?id=${res.data.id}`;
                     }, 500);
                 } else {
                     Utils.showMessage(res.message || '订单创建失败', 'error');
@@ -371,7 +371,7 @@ const App = {
     initOrderPay() {
         const orderId = Utils.getQueryParam('id');
         if (!orderId) {
-            window.location.href = '/my_orders.html';
+            window.location.href = './my_orders.html';
             return;
         }
 
@@ -387,7 +387,7 @@ const App = {
                 // payOrder already has confirm dialog, so we handle redirect here
                 if (res.code === 200) {
                     setTimeout(() => {
-                        window.location.href = '/my_orders.html';
+                        window.location.href = './my_orders.html';
                     }, 500);
                 } else {
                     payBtn.disabled = false;

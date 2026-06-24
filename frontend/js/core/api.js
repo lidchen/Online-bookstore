@@ -28,7 +28,7 @@ const API = {
                 localStorage.removeItem('username');
                 localStorage.removeItem('role');
                 if (window.location.pathname !== '/login.html') {
-                    window.location.href = '/login.html';
+                    window.location.href = './login.html';
                 }
                 return data;
             }

@@ -20,7 +20,7 @@ const Order = {
                     <div class="empty-icon">📋</div>
                     <p>暂无订单</p>
                     <p class="sub-text">快去选购图书吧</p>
-                    <a href="/index.html" class="btn btn-primary mt-2">去逛逛</a>
+                    <a href="./index.html" class="btn btn-primary mt-2">去逛逛</a>
                 </div>`;
             return;
         }

@@ -40,7 +40,7 @@ const Books = {
         const categoryName = book.category ? book.category.name : '';
 
         return `
-            <div class="book-card" onclick="window.location.href='/book_detail.html?id=${book.id}'">
+            <div class="book-card" onclick="window.location.href='./book_detail.html?id=${book.id}'">
                 <div class="book-cover">
                     ${coverUrl && coverUrl !== CONFIG.DEFAULT_COVER
                         ? `<img src="${coverUrl}" alt="${Utils.escapeHtml(book.title)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />`

@@ -10,7 +10,7 @@ const Auth = {
             localStorage.setItem('role', res.data.role);
             Utils.showMessage('登录成功', 'success');
             setTimeout(() => {
-                window.location.href = '/index.html';
+                window.location.href = './index.html';
             }, 500);
         } else {
             Utils.showMessage(res.message || '登录失败', 'error');
@@ -23,7 +23,7 @@ const Auth = {
         if (res.code === 200) {
             Utils.showMessage('注册成功，请登录', 'success');
             setTimeout(() => {
-                window.location.href = '/login.html';
+                window.location.href = './login.html';
             }, 1000);
         } else {
             Utils.showMessage(res.message || '注册失败', 'error');
@@ -38,7 +38,7 @@ const Auth = {
         localStorage.removeItem('role');
         Utils.showMessage('已退出登录', 'info');
         setTimeout(() => {
-            window.location.href = '/login.html';
+            window.location.href = './login.html';
         }, 500);
     },
 
