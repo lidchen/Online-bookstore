@@ -44,7 +44,7 @@ const Cart = {
 
         cartItems.forEach(item => {
             const book = item.book || {};
-            const coverUrl = book.cover_url || CONFIG.DEFAULT_COVER;
+            const coverUrl = Utils.getCoverUrl(book.cover_url);
             const subtotal = (book.price || 0) * (item.quantity || 0);
 
             html += `

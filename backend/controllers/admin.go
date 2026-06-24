@@ -77,12 +77,15 @@ func AdminCreateBook(c *gin.Context) {
 		defer file.Close()
 		ext := filepath.Ext(header.Filename)
 		filename := fmt.Sprintf("%d_%d%s", time.Now().UnixMilli(), stock, ext)
-		savePath := filepath.Join("static", "uploads", filename)
-		out, err := os.Create(savePath)
-		if err == nil {
-			defer out.Close()
-			io.Copy(out, file)
-			coverURL = "/static/uploads/" + filename
+		uploadDir := filepath.Join("static", "uploads")
+		if err := os.MkdirAll(uploadDir, 0755); err == nil {
+			savePath := filepath.Join(uploadDir, filename)
+			out, err := os.Create(savePath)
+			if err == nil {
+				defer out.Close()
+				io.Copy(out, file)
+				coverURL = "/static/uploads/" + filename
+			}
 		}
 	}
 
@@ -152,12 +155,15 @@ func AdminUpdateBook(c *gin.Context) {
 		defer file.Close()
 		ext := filepath.Ext(header.Filename)
 		filename := fmt.Sprintf("%d_%d%s", time.Now().UnixMilli(), book.ID, ext)
-		savePath := filepath.Join("static", "uploads", filename)
-		out, err := os.Create(savePath)
-		if err == nil {
-			defer out.Close()
-			io.Copy(out, file)
-			book.CoverURL = "/static/uploads/" + filename
+		uploadDir := filepath.Join("static", "uploads")
+		if err := os.MkdirAll(uploadDir, 0755); err == nil {
+			savePath := filepath.Join(uploadDir, filename)
+			out, err := os.Create(savePath)
+			if err == nil {
+				defer out.Close()
+				io.Copy(out, file)
+				book.CoverURL = "/static/uploads/" + filename
+			}
 		}
 	}
 

@@ -60,7 +60,7 @@ const Order = {
 
             items.forEach(item => {
                 const book = item.book || {};
-                const coverUrl = book.cover_url || CONFIG.DEFAULT_COVER;
+                const coverUrl = Utils.getCoverUrl(book.cover_url);
                 html += `
                     <tr>
                         <td>

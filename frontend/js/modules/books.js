@@ -42,7 +42,7 @@ const Books = {
     },
 
     renderBookCard(book) {
-        const coverUrl = book.cover_url || CONFIG.DEFAULT_COVER;
+        const coverUrl = Utils.getCoverUrl(book.cover_url);
         const categoryName = book.category ? book.category.name : '';
 
         return `
@@ -120,7 +120,7 @@ const Books = {
     },
 
     renderBookDetail(book) {
-        const coverUrl = book.cover_url || CONFIG.DEFAULT_COVER;
+        const coverUrl = Utils.getCoverUrl(book.cover_url);
 
         const coverEl = document.getElementById('detail-cover');
         const titleEl = document.getElementById('detail-title');

@@ -52,7 +52,7 @@ const Admin = {
                 <tbody>`;
 
         books.forEach(book => {
-            const coverUrl = book.cover_url || CONFIG.DEFAULT_COVER;
+            const coverUrl = Utils.getCoverUrl(book.cover_url);
             html += `
                 <tr>
                     <td>${book.id}</td>
@@ -168,6 +168,12 @@ const Admin = {
             </div>
             <div class="form-group">
                 <label>封面图片${!isEdit ? '' : '（留空则不修改）'}</label>
+                ${isEdit && book.cover_url ? `
+                    <div style="margin-bottom:8px;">
+                        <img src="${Utils.getCoverUrl(book.cover_url)}" alt="当前封面" style="max-width:120px;max-height:160px;border-radius:6px;border:1px solid var(--border);object-fit:cover;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+                        <div style="display:none;width:120px;height:160px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:6px;align-items:center;justify-content:center;color:#fff;font-size:32px;">${book.title ? book.title.charAt(0) : '📖'}</div>
+                    </div>
+                ` : ''}
                 <input type="file" class="form-input" id="book-cover" accept="image/*" />
             </div>`;
 

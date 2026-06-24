@@ -168,5 +168,18 @@ const Utils = {
     truncate(str, len = 20) {
         if (!str) return '';
         return str.length > len ? str.substring(0, len) + '...' : str;
+    },
+
+    /**
+     * 将后端返回的相对封面路径转为完整 URL
+     * 解决前端与后端不同源时图片无法加载的问题
+     */
+    getCoverUrl(coverUrl) {
+        if (!coverUrl) return CONFIG.DEFAULT_COVER;
+        // 已经是完整 URL
+        if (coverUrl.startsWith('http://') || coverUrl.startsWith('https://')) return coverUrl;
+        // 相对路径 → 拼接 STATIC_BASE
+        if (coverUrl.startsWith('/')) return CONFIG.STATIC_BASE + coverUrl;
+        return coverUrl;
     }
 };
