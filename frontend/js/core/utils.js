@@ -97,6 +97,40 @@ const Utils = {
     },
 
     /**
+     * 获取当前页面的应用内路径（相对于 app 根目录）
+     * 无论 app 被部署在哪个子目录下都能正确工作
+     * e.g. /frontend/login.html → /login.html
+     *      /frontend/admin/books.html → /admin/books.html
+     *      /login.html → /login.html
+     */
+    getPagePath() {
+        const pathname = window.location.pathname;
+        // 检查倒数第二个路径段是否是已知的子目录
+        const parts = pathname.replace(/\/$/, '').split('/');
+        const knownSubdirs = ['admin'];
+        if (parts.length >= 3 && knownSubdirs.includes(parts[parts.length - 2])) {
+            return '/' + parts.slice(-2).join('/');
+        }
+        return '/' + parts[parts.length - 1];
+    },
+
+    /**
+     * 检查当前页面路径是否匹配给定的页面标识
+     * pageId 格式如 '/login.html', '/admin/books.html'
+     */
+    isPage(pageId) {
+        return this.getPagePath() === pageId;
+    },
+
+    /**
+     * 检查当前页面路径是否在给定的页面列表中
+     */
+    isPageInList(pageList) {
+        const current = this.getPagePath();
+        return pageList.includes(current);
+    },
+
+    /**
      * 检查登录状态
      */
     checkAuth() {

@@ -5,7 +5,7 @@ const Header = {
     render() {
         const headerEl = document.getElementById('header');
         if (!headerEl) {
-            console.warn('[Header] #header element not found, skipping render');
+            console.log('[Header] #header element not present on this page, skipping render');
             return;
         }
 
@@ -53,7 +53,15 @@ const Header = {
 
         this.bindEvents();
         if (isLoggedIn) {
-            Cart.updateCartBadge();
+            // 延迟加载购物车 badge，避免首屏 API 调用阻塞渲染
+            // 如果返回 401 会由 api.js 统一处理（公开页面不会跳转）
+            setTimeout(() => {
+                try {
+                    Cart.updateCartBadge();
+                } catch (e) {
+                    console.log('[Header] Cart badge update skipped (Cart module may not be loaded)');
+                }
+            }, 100);
         }
     },
 

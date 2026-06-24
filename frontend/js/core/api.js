@@ -58,13 +58,25 @@ const API = {
             }
 
             if (data.code === 401) {
-                console.warn('[API] 401 Unauthorized — clearing auth state and redirecting to login');
-                localStorage.removeItem('user');
-                localStorage.removeItem('username');
-                localStorage.removeItem('role');
-                if (window.location.pathname !== '/login.html') {
+                // 需要登录才能访问的页面
+                const authRequiredPages = [
+                    '/cart.html', '/order_confirm.html', '/order_pay.html',
+                    '/my_orders.html', '/admin/books.html', '/admin/orders.html'
+                ];
+
+                if (Utils.isPageInList(authRequiredPages)) {
+                    // 在受保护页面收到 401 = 确实是未登录，清除状态并跳转
+                    console.warn('[API] 401 on auth-required page — logging out and redirecting');
+                    localStorage.removeItem('user');
+                    localStorage.removeItem('username');
+                    localStorage.removeItem('role');
                     window.location.href = './login.html';
+                    console.groupEnd();
+                    return data;
                 }
+
+                // 在公开页面收到 401 = session cookie 可能还未同步，不改变本地登录状态
+                console.warn('[API] 401 on public page — session cookie may not be synced yet, keeping localStorage auth state');
                 console.groupEnd();
                 return data;
             }
@@ -83,7 +95,7 @@ const API = {
                 console.error('  1. Backend server is not running on ' + CONFIG.API_BASE);
                 console.error('  2. CORS policy blocked the request (check backend CORS config)');
                 console.error('  3. Network error / firewall / VPN issue');
-                console.error('  4. The URL is incorrect');
+                console.error('  4. The URL might be incorrect');
             } else if (error.name === 'SyntaxError' && error.message.includes('JSON')) {
                 console.error('[API] DIAGNOSIS: Server returned something that is not valid JSON.');
                 console.error('[API] This usually means the backend crashed or returned an HTML error page.');
@@ -136,13 +148,24 @@ const API = {
             console.groupEnd();
 
             if (data.code === 401) {
-                console.warn('[API] 401 on upload — clearing auth and redirecting');
-                localStorage.removeItem('user');
-                localStorage.removeItem('username');
-                localStorage.removeItem('role');
-                if (window.location.pathname !== '/login.html') {
+                const authRequiredPages = [
+                    '/cart.html', '/order_confirm.html', '/order_pay.html',
+                    '/my_orders.html', '/admin/books.html', '/admin/orders.html'
+                ];
+
+                if (Utils.isPageInList(authRequiredPages)) {
+                    console.warn('[API] 401 on upload, auth-required page — logging out');
+                    localStorage.removeItem('user');
+                    localStorage.removeItem('username');
+                    localStorage.removeItem('role');
                     window.location.href = './login.html';
+                    console.groupEnd();
+                    return data;
                 }
+
+                console.warn('[API] 401 on upload, public page — keeping localStorage auth state');
+                console.groupEnd();
+                return data;
             }
             return data;
         } catch (error) {

@@ -4,7 +4,10 @@
 const Footer = {
     render() {
         const footerEl = document.getElementById('footer');
-        if (!footerEl) return;
+        if (!footerEl) {
+            console.log('[Footer] #footer element not present on this page, skipping render');
+            return;
+        }
 
         footerEl.innerHTML = `
             <div class="footer">

@@ -5,9 +5,11 @@ const App = {
     routes: {},
 
     init() {
-        const path = window.location.pathname;
+        const rawPathname = window.location.pathname;
+        const path = Utils.getPagePath();
         console.group('[App] Initializing');
-        console.log('Current path:', path);
+        console.log('Raw pathname:', rawPathname);
+        console.log('App page path:', path);
         console.log('Full URL:', window.location.href);
         console.log('API base:', CONFIG.API_BASE);
         console.log('Auth state:', {
@@ -18,9 +20,9 @@ const App = {
         });
 
         try {
-            // 渲染公共组件
-            Header.render();
-            Footer.render();
+            // 渲染公共组件（仅当页面包含对应容器时渲染）
+            if (document.getElementById('header')) Header.render();
+            if (document.getElementById('footer')) Footer.render();
 
             // 路由守卫规则
             const needAuthPages = [
@@ -31,7 +33,7 @@ const App = {
             const authPages = ['/login.html', '/register.html'];
 
             // 已登录用户访问登录/注册页 → 跳转首页
-            if (authPages.includes(path) && Utils.checkAuth()) {
+            if (Utils.isPageInList(authPages) && Utils.checkAuth()) {
                 console.log('[App] Already logged in, redirecting to index.html');
                 window.location.href = './index.html';
                 console.groupEnd();
@@ -39,7 +41,7 @@ const App = {
             }
 
             // 未登录访问需要登录的页面 → 跳转登录页
-            if (needAuthPages.includes(path) && !Utils.checkAuth()) {
+            if (Utils.isPageInList(needAuthPages) && !Utils.checkAuth()) {
                 console.log('[App] Not authenticated, redirecting to login.html');
                 window.location.href = './login.html';
                 console.groupEnd();
@@ -47,7 +49,7 @@ const App = {
             }
 
             // 非管理员访问后台页面 → 跳转首页
-            if (adminPages.includes(path) && !Utils.isAdmin()) {
+            if (Utils.isPageInList(adminPages) && !Utils.isAdmin()) {
                 console.warn('[App] Non-admin user tried to access admin page');
                 Utils.showMessage('无权限访问后台', 'error');
                 setTimeout(() => { window.location.href = './index.html'; }, 1000);
@@ -310,7 +312,7 @@ const App = {
             btn.textContent = '注册中...';
 
             console.log('[Register Form] Calling Auth.register()...');
-            const result = await Auth.register(username, password);
+            const result = await Auth.register(username, password, confirmPassword);
 
             console.log('[Register Form] Auth.register() returned, code:', result.code);
             if (result.code !== 200) {
