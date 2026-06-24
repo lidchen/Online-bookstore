@@ -99,8 +99,11 @@ const Auth = {
 
         console.log('[Auth] Logout complete — localStorage cleared');
         Utils.showMessage('已退出登录', 'info');
+
+        const currentPath = Utils.getPagePath();
+        const loginPath = currentPath.startsWith('/admin/') ? '../login.html' : './login.html';
         setTimeout(() => {
-            window.location.replace('./login.html');
+            window.location.replace(loginPath);
         }, 500);
         console.groupEnd();
     },
