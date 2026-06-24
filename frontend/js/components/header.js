@@ -13,13 +13,18 @@ const Header = {
         const isAdmin = Utils.isAdmin();
         const username = localStorage.getItem('username') || '';
 
-        console.log('[Header] Rendering — loggedIn:', isLoggedIn, 'isAdmin:', isAdmin, 'username:', username);
+        // 根据当前页面路径计算相对根路径
+        // admin 子目录下的页面需要 ../ 前缀
+        const currentPath = Utils.getPagePath();
+        const basePath = currentPath.startsWith('/admin/') ? '../' : './';
+
+        console.log('[Header] Rendering — loggedIn:', isLoggedIn, 'isAdmin:', isAdmin, 'username:', username, 'basePath:', basePath);
 
         headerEl.innerHTML = `
             <div class="header">
                 <div class="container">
                     <div class="header-inner">
-                        <a href="./index.html" class="logo">
+                        <a href="${basePath}index.html" class="logo">
                             <div class="logo-icon">📖</div>
                             <span>CloudBook</span>
                         </a>
@@ -31,7 +36,7 @@ const Header = {
                         </div>
                         <div class="header-actions">
                             ${isLoggedIn ? `
-                                <a href="./cart.html" class="cart-btn" title="购物车">
+                                <a href="${basePath}cart.html" class="cart-btn" title="购物车">
                                     🛒
                                     <span class="cart-badge" id="cart-badge" style="display:none;">0</span>
                                 </a>
@@ -39,12 +44,12 @@ const Header = {
                                     <div class="user-avatar">${username.charAt(0).toUpperCase()}</div>
                                     <span>${Utils.escapeHtml(username)}</span>
                                 </div>
-                                <a href="./my_orders.html" class="nav-link">我的订单</a>
-                                ${isAdmin ? `<a href="./admin/books.html" class="nav-link admin-link">后台管理</a>` : ''}
+                                <a href="${basePath}my_orders.html" class="nav-link">我的订单</a>
+                                ${isAdmin ? `<a href="${basePath}admin/books.html" class="nav-link admin-link">后台管理</a>` : ''}
                                 <button class="nav-link" id="logout-btn" style="color:#ef4444;">退出</button>
                             ` : `
-                                <a href="./login.html" class="btn btn-primary btn-sm">登录</a>
-                                <a href="./register.html" class="btn btn-outline btn-sm">注册</a>
+                                <a href="${basePath}login.html" class="btn btn-primary btn-sm">登录</a>
+                                <a href="${basePath}register.html" class="btn btn-outline btn-sm">注册</a>
                             `}
                         </div>
                     </div>
@@ -72,12 +77,15 @@ const Header = {
         const searchBtn = document.getElementById('header-search-btn');
         const logoutBtn = document.getElementById('logout-btn');
 
+        const currentPath = Utils.getPagePath();
+        const basePath = currentPath.startsWith('/admin/') ? '../' : './';
+
         const doSearch = () => {
             if (searchInput) {
                 const keyword = searchInput.value.trim();
                 if (keyword) {
                     console.log('[Header] Search:', keyword);
-                    window.location.href = `./index.html?keyword=${encodeURIComponent(keyword)}`;
+                    window.location.href = `${basePath}index.html?keyword=${encodeURIComponent(keyword)}`;
                 }
             }
         };

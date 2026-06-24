@@ -395,7 +395,7 @@ const App = {
         const cartRes = await Cart.loadCart();
         Loading.hide();
 
-        if (cartRes.code !== 200 || !cartRes.data || cartRes.data.length === 0) {
+        if (cartRes.code !== 200 || !cartRes.data?.items || cartRes.data.items.length === 0) {
             document.getElementById('order-items').innerHTML = `
                 <div class="empty-state">
                     <div class="empty-icon">🛒</div>
@@ -406,7 +406,7 @@ const App = {
             return;
         }
 
-        const cartItems = cartRes.data;
+        const cartItems = cartRes.data.items || [];
         let itemsHtml = '';
         let total = 0;
 
@@ -495,14 +495,13 @@ const App = {
                 payBtn.textContent = '支付中...';
 
                 const res = await Order.payOrder(orderId);
-                // payOrder already has confirm dialog, so we handle redirect here
-                if (res.code === 200) {
+                if (res && res.code === 200) {
                     setTimeout(() => {
                         window.location.href = './my_orders.html';
                     }, 500);
                 } else {
                     payBtn.disabled = false;
-                    payBtn.textContent = '我已支付';
+                    payBtn.textContent = '我已支付，下一步';
                 }
             });
         }

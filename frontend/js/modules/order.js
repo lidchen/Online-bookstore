@@ -12,7 +12,7 @@ const Order = {
     async loadOrders() {
         console.log('[Order] Loading orders...');
         const res = await API.get('/orders');
-        console.log('[Order] Load result — code:', res.code, 'count:', res.data ? res.data.length : 0);
+        console.log('[Order] Load result — code:', res.code, 'count:', res.data?.list?.length || 0);
         return res;
     },
 
@@ -105,17 +105,20 @@ const Order = {
     },
 
     async payOrder(orderId) {
-        Modal.showConfirm('确认支付该订单？', async () => {
-            console.log('[Order] Paying order:', orderId);
-            const res = await API.put(`/orders/${orderId}/pay`);
-            if (res.code === 200) {
-                console.log('[Order] Payment successful');
-                Utils.showMessage('支付成功', 'success');
-                this.loadAndRender();
-            } else {
-                console.warn('[Order] Payment failed — code:', res.code, 'message:', res.message);
-                Utils.showMessage(res.message || '支付失败', 'error');
-            }
+        return new Promise((resolve) => {
+            Modal.showConfirm('确认支付该订单？', async () => {
+                console.log('[Order] Paying order:', orderId);
+                const res = await API.put(`/orders/${orderId}/pay`);
+                if (res.code === 200) {
+                    console.log('[Order] Payment successful');
+                    Utils.showMessage('支付成功', 'success');
+                    this.loadAndRender();
+                } else {
+                    console.warn('[Order] Payment failed — code:', res.code, 'message:', res.message);
+                    Utils.showMessage(res.message || '支付失败', 'error');
+                }
+                resolve(res);
+            });
         });
     },
 
@@ -162,7 +165,7 @@ const Order = {
         const res = await this.loadOrders();
         Loading.hide();
         if (res.code === 200) {
-            this.renderOrders(res.data || []);
+            this.renderOrders(res.data?.list || []);
         } else {
             this.renderOrders([]);
         }

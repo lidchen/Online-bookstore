@@ -5,7 +5,7 @@ const Cart = {
     async loadCart() {
         console.log('[Cart] Loading cart...');
         const res = await API.get('/cart');
-        console.log('[Cart] Load result — code:', res.code, 'items:', res.data ? res.data.length : 0);
+        console.log('[Cart] Load result — code:', res.code, 'items:', res.data?.items?.length || 0);
         return res;
     },
 
@@ -157,7 +157,7 @@ const Cart = {
         const res = await this.loadCart();
         Loading.hide();
         if (res.code === 200) {
-            this.renderCart(res.data || []);
+            this.renderCart(res.data?.items || []);
         } else {
             this.renderCart([]);
         }
@@ -166,8 +166,8 @@ const Cart = {
     async updateCartBadge() {
         const res = await this.loadCart();
         const badge = document.getElementById('cart-badge');
-        if (badge && res.code === 200 && res.data) {
-            const count = res.data.length;
+        if (badge && res.code === 200 && res.data?.items) {
+            const count = res.data.items.length;
             badge.textContent = count;
             badge.style.display = count > 0 ? 'flex' : 'none';
         }

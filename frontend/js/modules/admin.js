@@ -92,7 +92,7 @@ const Admin = {
 
     async updateBook(id, formData) {
         console.log('[Admin] Updating book:', id);
-        return await API.upload(`/admin/books/${id}`, formData);
+        return await API.upload(`/admin/books/${id}`, formData, 'PUT');
     },
 
     async deleteBook(id) {

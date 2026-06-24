@@ -132,9 +132,9 @@ const API = {
         return this.request(url, { method: 'PATCH', body });
     },
 
-    async upload(url, formData) {
+    async upload(url, formData, method = 'POST') {
         const fullUrl = CONFIG.API_BASE + url;
-        console.group(`[API] UPLOAD ${fullUrl}`);
+        console.group(`[API] UPLOAD ${method} ${fullUrl}`);
         const startTime = performance.now();
 
         try {
@@ -144,7 +144,7 @@ const API = {
                 headers['Authorization'] = 'Bearer ' + token;
             }
             const response = await fetch(fullUrl, {
-                method: 'POST',
+                method,
                 credentials: 'include',
                 headers,
                 body: formData
