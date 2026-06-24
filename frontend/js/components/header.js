@@ -83,10 +83,8 @@ const Header = {
         const doSearch = () => {
             if (searchInput) {
                 const keyword = searchInput.value.trim();
-                if (keyword) {
-                    console.log('[Header] Search:', keyword);
-                    window.location.href = `${basePath}index.html?keyword=${encodeURIComponent(keyword)}`;
-                }
+                console.log('[Header] Search:', keyword || '(empty)');
+                window.location.href = `${basePath}index.html${keyword ? '?keyword=' + encodeURIComponent(keyword) : ''}`;
             }
         };
 

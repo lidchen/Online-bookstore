@@ -238,6 +238,7 @@ const App = {
             if (result.code !== 200) {
                 btn.disabled = false;
                 btn.textContent = '登录';
+                document.getElementById('password-error').textContent = result.message || '登录失败，请重试';
                 console.log('[Login Form] Button re-enabled (login failed)');
             }
             // 如果登录成功，Auth.login 内部会处理跳转，不需要恢复按钮

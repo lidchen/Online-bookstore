@@ -284,7 +284,7 @@ const Admin = {
                 <tbody>`;
 
         orders.forEach(order => {
-            const username = order.user ? order.user.username : '-';
+            const username = order.username || '-';
             html += `
                 <tr>
                     <td class="font-bold">${order.order_no || order.id}</td>

@@ -44,7 +44,7 @@ func GetBooks(query BookListQuery) ([]Book, int64, error) {
 	}
 
 	if query.Keyword != "" {
-		q = q.Where("title LIKE ?", "%"+query.Keyword+"%")
+		q = q.Where("title LIKE ? OR author LIKE ?", "%"+query.Keyword+"%", "%"+query.Keyword+"%")
 	}
 
 	if query.CategoryID > 0 {
