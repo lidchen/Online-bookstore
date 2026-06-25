@@ -50,7 +50,6 @@ const Auth = {
         }
 
         console.warn('[Auth] Login FAILED — code:', res.code, 'message:', res.message);
-        Utils.showMessage(res.message || '登录失败', 'error');
         console.groupEnd();
         return res;
     },
