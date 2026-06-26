@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"gorm.io/gorm"
 	"math/rand"
 	"time"
 )
@@ -47,7 +48,9 @@ func CreateOrder(order *Order) error {
 
 func GetOrdersByUserID(userID uint) ([]Order, error) {
 	var orders []Order
-	err := db.Where("user_id = ?", userID).Preload("Items").Preload("Items.Book").
+	err := db.Where("user_id = ?", userID).Preload("Items").Preload("Items.Book", func(db *gorm.DB) *gorm.DB {
+		return db.Unscoped()
+	}).
 		Order("created_at DESC").Find(&orders).Error
 	for i := range orders {
 		orders[i].StatusText = OrderStatusText[orders[i].Status]
@@ -57,7 +60,9 @@ func GetOrdersByUserID(userID uint) ([]Order, error) {
 
 func GetOrderByID(id uint) (*Order, error) {
 	var order Order
-	err := db.Preload("Items").Preload("Items.Book").First(&order, id).Error
+	err := db.Preload("Items").Preload("Items.Book", func(db *gorm.DB) *gorm.DB {
+		return db.Unscoped()
+	}).First(&order, id).Error
 	if err != nil {
 		return nil, err
 	}

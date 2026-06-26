@@ -197,7 +197,7 @@ func AdminDeleteBook(c *gin.Context) {
 }
 
 type UpdateBookStatusRequest struct {
-	Status int `json:"status" binding:"required"`
+	Status *int `json:"status" binding:"required"`
 }
 
 func AdminUpdateBookStatus(c *gin.Context) {
@@ -214,7 +214,7 @@ func AdminUpdateBookStatus(c *gin.Context) {
 		return
 	}
 
-	if req.Status != 0 && req.Status != 1 {
+	if req.Status == nil || (*req.Status != 0 && *req.Status != 1) {
 		utils.Error(c, http.StatusBadRequest, "状态值无效，必须是0或1")
 		return
 	}
@@ -224,7 +224,7 @@ func AdminUpdateBookStatus(c *gin.Context) {
 		return
 	}
 
-	if err := models.UpdateBookStatus(uint(id), req.Status); err != nil {
+	if err := models.UpdateBookStatus(uint(id), *req.Status); err != nil {
 		utils.Error(c, http.StatusInternalServerError, "更新图书状态失败")
 		return
 	}

@@ -1,5 +1,7 @@
 package models
 
+import "gorm.io/gorm"
+
 type OrderItem struct {
 	ID       uint    `gorm:"primaryKey" json:"id"`
 	OrderID  uint    `gorm:"index;not null" json:"order_id"`
@@ -15,7 +17,9 @@ func CreateOrderItem(item *OrderItem) error {
 
 func GetOrderItemsByOrderID(orderID uint) ([]OrderItem, error) {
 	var items []OrderItem
-	err := db.Where("order_id = ?", orderID).Preload("Book").Find(&items).Error
+	err := db.Where("order_id = ?", orderID).Preload("Book", func(db *gorm.DB) *gorm.DB {
+		return db.Unscoped()
+	}).Find(&items).Error
 	return items, err
 }
 

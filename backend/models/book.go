@@ -21,8 +21,9 @@ type Book struct {
 	Category    *Category `gorm:"foreignKey:CategoryID" json:"category,omitempty"`
 	Description string    `gorm:"type:text" json:"description"`
 	CoverURL    string    `gorm:"size:500" json:"cover_url"`
-	Status      int       `gorm:"default:1;index" json:"status"`
-	CreatedAt   time.Time `json:"created_at"`
+	Status      int            `gorm:"default:1;index" json:"status"`
+	CreatedAt   time.Time      `json:"created_at"`
+	DeletedAt   gorm.DeletedAt `gorm:"index" json:"deleted_at"`
 }
 
 type BookListQuery struct {
