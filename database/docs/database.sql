@@ -53,7 +53,8 @@ CREATE TABLE IF NOT EXISTS books (
     description   TEXT,
     cover_url     VARCHAR(500),
     status        SMALLINT        DEFAULT 1,
-    created_at    TIMESTAMP       DEFAULT CURRENT_TIMESTAMP
+    created_at    TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
+    deleted_at    TIMESTAMP       DEFAULT NULL
 );
 
 COMMENT ON TABLE  books            IS '图书表';
@@ -67,6 +68,7 @@ COMMENT ON COLUMN books.description  IS '图书简介';
 COMMENT ON COLUMN books.cover_url    IS '封面图片路径';
 COMMENT ON COLUMN books.status       IS '状态：1=上架，0=下架';
 COMMENT ON COLUMN books.created_at   IS '上架时间';
+COMMENT ON COLUMN books.deleted_at   IS '软删除时间，非空表示已删除';
 
 CREATE INDEX IF NOT EXISTS idx_books_category_id ON books(category_id);
 CREATE INDEX IF NOT EXISTS idx_books_status      ON books(status);
